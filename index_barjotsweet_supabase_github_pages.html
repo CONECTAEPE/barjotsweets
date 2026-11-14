@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Digital — Encuestas Barjotsweet</title>
+<style>
+  :root {
+    --rosa: #c2185b;
+    --rosa-claro: #f8bbd0;
+    --rosa-suave: #fce4ec;
+    --marron: #4e342e;
+    --marron-claro: #8d6e63;
+    --crema: #fff8f0;
+    --dorado: #d4a373;
+    --verde: #2e7d32;
+    --amarillo: #f9a825;
+    --rojo: #c62828;
+    --sombra: 0 4px 14px rgba(0,0,0,0.08);
+    --sombra-hover: 0 8px 24px rgba(194,24,91,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #fff8f0 0%, #fce4ec 100%);
+    color: #2b2b2b;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    background: linear-gradient(135deg, var(--rosa) 0%, var(--marron) 100%);
+    color: #fff;
+    padding: 40px 20px 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: "🧁";
+    position: absolute;
+    font-size: 180px;
+    opacity: 0.08;
+    top: -40px;
+    left: 20px;
+    transform: rotate(-15deg);
+  }
+  header::after {
+    content: "🍰";
+    position: absolute;
+    font-size: 160px;
+    opacity: 0.08;
+    bottom: -50px;
+    right: 30px;
+    transform: rotate(12deg);
+  }
+  header h1 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  header p.sub {
+    font-size: 1rem;
+    opacity: 0.92;
+    position: relative;
+    z-index: 1;
+  }
+  header .autor {
+    margin-top: 14px;
+    font-size: 0.9rem;
+    opacity: 0.85;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== BARRA SUPERIOR USUARIO ===== */
+  .topbar-usuario {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 2px solid var(--rosa-claro);
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .usuario-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--marron);
+    font-weight: 600;
+  }
+  .avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--rosa), var(--dorado));
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+  .badge-rol {
+    font-size: 0.7rem;
+    padding: 2px 10px;
+    border-radius: 12px;
+    background: var(--rosa-suave);
+    color: var(--rosa);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+  }
+  .badge-rol.admin { background: #fff3e0; color: #e65100; }
+  .topbar-acciones { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ===== TOOLBAR ===== */
+  .toolbar {
+    position: sticky;
+    top: 55px;
+    z-index: 50;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 2px solid var(--rosa-claro);
+    padding: 12px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  /* ===== BOTONES ===== */
+  .btn {
+    border: none;
+    border-radius: 30px;
+    padding: 9px 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .btn-primario {
+    background: linear-gradient(135deg, var(--rosa), #e91e63);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(194,24,91,0.3);
+  }
+  .btn-primario:hover { transform: translateY(-2px); box-shadow: var(--sombra-hover); }
+  .btn-secundario {
+    background: #fff;
+    color: var(--rosa);
+    border: 2px solid var(--rosa);
+  }
+  .btn-secundario:hover { background: var(--rosa-suave); transform: translateY(-2px); }
+  .btn-dorado {
+    background: linear-gradient(135deg, var(--dorado), #e0b98a);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(212,163,115,0.35);
+  }
+  .btn-dorado:hover { transform: translateY(-2px); box-shadow: var(--sombra-hover); }
+  .btn-peligro {
+    background: linear-gradient(135deg, #e53935, #c62828);
+    color: #fff;
+  }
+  .btn-peligro:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(198,40,40,0.35); }
+  .btn-editar {
+    background: linear-gradient(135deg, #1e88e5, #1565c0);
+    color: #fff;
+  }
+  .btn-editar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30,136,229,0.35); }
+  .btn-pequeno { padding: 6px 14px; font-size: 0.78rem; }
+
+  /* ===== CONTENEDOR ===== */
+  .contenedor {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 20px 60px;
+  }
+
+  /* ===== SECCIONES ===== */
+  .seccion {
+    background: #fff;
+    border-radius: 18px;
+    margin-bottom: 26px;
+    box-shadow: var(--sombra);
+    overflow: hidden;
+    border: 1px solid rgba(194,24,91,0.08);
+    transition: box-shadow 0.3s;
+  }
+  .seccion:hover { box-shadow: 0 8px 28px rgba(194,24,91,0.12); }
+
+  .seccion-header {
+    background: linear-gradient(135deg, var(--rosa-suave), #fff);
+    padding: 20px 26px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+    border-bottom: 1px solid rgba(194,24,91,0.1);
+    transition: background 0.3s;
+  }
+  .seccion-header:hover { background: linear-gradient(135deg, var(--rosa-claro), #fff); }
+
+  .seccion-header h2 {
+    font-size: 1.25rem;
+    color: var(--marron);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .seccion-header h2 .icono {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: var(--rosa);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .flecha {
+    font-size: 1.2rem;
+    color: var(--rosa);
+    transition: transform 0.35s ease;
+    font-weight: bold;
+  }
+  .seccion.abierta .flecha { transform: rotate(180deg); }
+
+  .seccion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+  .seccion.abierta .seccion-body { max-height: 6000px; }
+  .seccion-inner { padding: 24px 26px 30px; }
+
+  /* ===== TABLAS ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  thead th {
+    background: linear-gradient(135deg, var(--rosa), var(--marron));
+    color: #fff;
+    padding: 12px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f0e0e8;
+    vertical-align: top;
+  }
+  tbody tr:nth-child(even) { background: #fdf5f8; }
+  tbody tr:hover { background: var(--rosa-suave); transition: background 0.2s; }
+  tbody tr:last-child td { border-bottom: none; }
+  .centro { text-align: center; }
+  .negrita { font-weight: 700; }
+
+  /* ===== BADGES ===== */
+  .badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge-favorable { background: #e8f5e9; color: var(--verde); }
+  .badge-neutral { background: #fff8e1; color: #8d6e00; }
+  .badge-debil { background: #ffebee; color: var(--rojo); }
+  .badge-moderada { background: #fff3e0; color: #e65100; }
+  .badge-consolidada { background: #e8f5e9; color: var(--verde); }
+  .badge-alto { background: #e8f5e9; color: var(--verde); }
+
+  /* ===== KPIs ===== */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .kpi {
+    background: linear-gradient(135deg, #fff, var(--rosa-suave));
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid rgba(194,24,91,0.12);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .kpi:hover { transform: translateY(-4px); box-shadow: var(--sombra-hover); }
+  .kpi .valor {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--rosa);
+    line-height: 1.1;
+  }
+  .kpi .etiqueta {
+    font-size: 0.82rem;
+    color: var(--marron-claro);
+    margin-top: 6px;
+    font-weight: 600;
+  }
+  .kpi .detalle { font-size: 0.75rem; color: #888; margin-top: 4px; }
+
+  /* ===== BARRAS ===== */
+  .barra-grupo { margin: 14px 0; }
+  .barra-item { margin-bottom: 14px; }
+  .barra-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    color: var(--marron);
+    font-weight: 600;
+  }
+  .barra-label span:last-child { color: var(--rosa); }
+  .barra-fondo {
+    background: #f0e0e8;
+    border-radius: 20px;
+    height: 16px;
+    overflow: hidden;
+  }
+  .barra-relleno {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--rosa), #f06292);
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .barra-relleno.verde { background: linear-gradient(90deg, #43a047, #81c784); }
+  .barra-relleno.amarilla { background: linear-gradient(90deg, #f9a825, #ffd54f); }
+  .barra-relleno.roja { background: linear-gradient(90deg, #c62828, #ef5350); }
+  .barra-relleno.dorada { background: linear-gradient(90deg, #b8860b, var(--dorado)); }
+
+  /* ===== INTERPRETACIÓN ===== */
+  .interpretacion {
+    background: linear-gradient(135deg, #f3e5f5, #fce4ec);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin: 18px 0;
+    border-left: 5px solid var(--rosa);
+    font-size: 0.92rem;
+  }
+  .interpretacion strong { color: var(--rosa); }
+
+  /* ===== CONCLUSIÓN ===== */
+  .conclusion {
+    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+    border-radius: 14px;
+    padding: 22px 26px;
+    border-left: 6px solid var(--verde);
+    margin: 18px 0;
+  }
+  .conclusion ol { margin-left: 20px; }
+  .conclusion li { margin-bottom: 10px; font-size: 0.92rem; }
+
+  .check { color: var(--verde); font-weight: 800; font-size: 1.1rem; }
+  .dash { color: #aaa; }
+
+  /* ===== FORMULARIOS ===== */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .form-grupo { display: flex; flex-direction: column; gap: 6px; }
+  .form-grupo label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--marron);
+    letter-spacing: 0.2px;
+  }
+  .form-grupo input,
+  .form-grupo select {
+    padding: 10px 14px;
+    border: 2px solid #e0d0d8;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: border 0.25s, box-shadow 0.25s;
+    background: #fff;
+  }
+  .form-grupo input:focus,
+  .form-grupo select:focus {
+    outline: none;
+    border-color: var(--rosa);
+    box-shadow: 0 0 0 3px rgba(194,24,91,0.12);
+  }
+  .form-acciones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(40,20,30,0.55);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+  }
+  .modal-overlay.activo { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 20px;
+    max-width: 480px;
+    width: 100%;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: modalIn 0.35s cubic-bezier(0.22,1,0.36,1);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal h3 {
+    color: var(--marron);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .modal .cerrar {
+    float: right;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: var(--marron-claro);
+  }
+
+  /* ===== AVISOS ===== */
+  .aviso {
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 12px 0;
+    display: none;
+  }
+  .aviso.exito { background: #e8f5e9; color: var(--verde); border-left: 4px solid var(--verde); }
+  .aviso.error { background: #ffebee; color: var(--rojo); border-left: 4px solid var(--rojo); }
+  .aviso.visible { display: block; animation: fadeIn 0.3s; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ===== LOGIN ===== */
+  .login-wrap {
+    max-width: 420px;
+    margin: 60px auto;
+    background: #fff;
+    border-radius: 22px;
+    padding: 40px 34px;
+    box-shadow: 0 20px 60px rgba(194,24,91,0.18);
+    text-align: center;
+  }
+  .login-wrap .icono-login {
+    width: 70px; height: 70px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--rosa), var(--dorado));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    color: #fff;
+  }
+  .login-wrap h2 { color: var(--marron); margin-bottom: 6px; }
+  .login-wrap p { font-size: 0.85rem; color: var(--marron-claro); margin-bottom: 22px; }
+  .login-wrap .form-grupo { text-align: left; margin-bottom: 14px; }
+  .login-wrap .btn { width: 100%; justify-content: center; margin-top: 6px; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 0.8rem;
+    color: var(--marron-claro);
+    border-top: 1px solid var(--rosa-claro);
+    background: rgba(255,255,255,0.6);
+  }
+
+  /* ===== PROGRESO PDF ===== */
+  .pdf-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(40,20,30,0.6);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+    padding: 20px;
+  }
+  .pdf-overlay.activo { display: flex; }
+  .pdf-panel {
+    background: #fff;
+    border-radius: 22px;
+    max-width: 560px;
+    width: 100%;
+    padding: 36px 34px;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+    animation: modalIn 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .pdf-panel h3 {
+    text-align: center;
+    color: var(--marron);
+    font-size: 1.25rem;
+    margin-bottom: 6px;
+  }
+  .pdf-panel .pdf-sub {
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--marron-claro);
+    margin-bottom: 24px;
+  }
+  .pdf-barra-wrap {
+    background: #f0e0e8;
+    border-radius: 30px;
+    height: 22px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .pdf-barra {
+    height: 100%;
+    width: 0;
+    border-radius: 30px;
+    background: linear-gradient(90deg, var(--rosa), #f06292, var(--dorado));
+    background-size: 200% 100%;
+    transition: width 0.4s ease;
+    animation: brillo 2s linear infinite;
+  }
+  @keyframes brillo {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  .pdf-porcentaje {
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--rosa);
+    margin-bottom: 18px;
+  }
+  .pdf-pasos { list-style: none; }
+  .pdf-pasos li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    color: #999;
+    transition: all 0.35s;
+    margin-bottom: 6px;
+    background: #fafafa;
+  }
+  .pdf-pasos li .estado {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.35s;
+  }
+  .pdf-pasos li.activo {
+    color: var(--marron);
+    background: var(--rosa-suave);
+    font-weight: 600;
+  }
+  .pdf-pasos li.activo .estado {
+    background: var(--amarillo);
+    animation: pulso 1s ease infinite;
+  }
+  @keyframes pulso {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+  .pdf-pasos li.completado {
+    color: var(--verde);
+    background: #e8f5e9;
+    font-weight: 600;
+  }
+  .pdf-pasos li.completado .estado {
+    background: var(--verde);
+  }
+  .pdf-panel .btn-descarga-final {
+    width: 100%;
+    justify-content: center;
+    margin-top: 22px;
+    font-size: 1rem;
+    padding: 14px;
+    display: none;
+  }
+  .pdf-panel .btn-descarga-final.visible {
+    display: inline-flex;
+    animation: fadeIn 0.4s;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.3rem; }
+    .toolbar { padding: 10px; gap: 6px; top: 50px; }
+    .btn { padding: 8px 14px; font-size: 0.8rem; }
+    .seccion-inner { padding: 16px; }
+    table { font-size: 0.78rem; }
+    thead th, tbody td { padding: 8px; }
+    .kpi .valor { font-size: 1.5rem; }
+    .topbar-usuario { padding: 8px 12px; }
+    .usuario-info { font-size: 0.8rem; }
+    .pdf-panel { padding: 26px 20px; }
+  }
+
+  /* ===== IMPRESIÓN ===== */
+  @media print {
+    @page { size: A4; margin: 1.5cm; }
+    body { background: #fff !important; }
+    .toolbar, footer, .flecha, .btn, .topbar-usuario, .login-wrap, .modal-overlay, .pdf-overlay { display: none !important; }
+    header { background: var(--rosa) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 20px; }
+    header::before, header::after { display: none; }
+    .seccion { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; margin-bottom: 14px; }
+    .seccion .seccion-body { max-height: none !important; overflow: visible !important; }
+    .seccion-inner { padding: 16px; }
+    .seccion-header { cursor: default; }
+    table { page-break-inside: avoid; }
+    tr { page-break-inside: avoid; }
+    .barra-relleno, thead th, .kpi, .interpretacion, .conclusion {
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .salto { page-break-before: always; }
+  }
+
+  .oculto { display: none !important; }
+  body.modo-edicion .seccion-inner { outline: 2px dashed var(--dorado); outline-offset: -4px; }
+  body.modo-edicion .seccion-inner:focus { outline: 2px solid var(--rosa); }
+  .estado-persistencia { font-size:.78rem; color:var(--verde); margin-left:8px; }
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="pantallaLogin" class="login-wrap">
+  <div class="icono-login">🔐</div>
+  <h2>Acceso al Sistema</h2>
+  <p>Repostería Barjotsweet — Gestión de Encuestas</p>
+
+  <div class="form-grupo">
+    <label>Correo electrónico</label>
+    <input type="email" id="loginUsuario" placeholder="Ingrese su correo electrónico" autocomplete="username">
+  </div>
+  <div class="form-grupo">
+    <label>Contraseña</label>
+    <input type="password" id="loginClave" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')iniciarSesion()">
+  </div>
+  <div id="avisoLogin" class="aviso error"></div>
+  <button class="btn btn-primario" onclick="iniciarSesion()">Ingresar al sistema →</button>
+  <button class="btn btn-secundario" style="width:100%;justify-content:center;margin-top:10px;" onclick="registrarCuenta()">Crear una cuenta nueva</button>
+  <p style="font-size:.75rem;margin-top:12px;color:var(--marron-claro);">Las cuentas se autentican y almacenan de forma segura mediante Supabase.</p>
+</div>
+
+<!-- ================= APP (oculto hasta login) ================= -->
+<div id="app" class="oculto">
+
+  <!-- TOPBAR USUARIO -->
+  <div class="topbar-usuario">
+    <div class="usuario-info">
+      <div class="avatar" id="avatarUsuario">A</div>
+      <span id="nombreUsuario">Administrador</span>
+      <span class="badge-rol admin" id="rolUsuario">ADMIN</span>
+    </div>
+    <div class="topbar-acciones">
+      <button class="btn btn-secundario btn-pequeno" onclick="abrirModalUsuarios()">👥 Usuarios</button>
+      <button class="btn btn-peligro btn-pequeno" onclick="cerrarSesion()">⎋ Salir</button>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <h1>🧁 Sistema Digital de Encuestas</h1>
+    <p class="sub">Marketing Relacional para el Posicionamiento de la Repostería Barjotsweet</p>
+    <p class="autor">Blanca Mendoza — V-26.187.660 · Barquisimeto, abril 2025</p>
+  </header>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <button class="btn btn-primario" onclick="abrirProgresoPDF()">🖨️ Descargar PDF</button>
+    <button class="btn btn-secundario" onclick="expandirTodo(true)">📂 Expandir todo</button>
+    <button class="btn btn-secundario" onclick="expandirTodo(false)">📁 Contraer todo</button>
+    <button class="btn btn-dorado" onclick="animarBarras()">📊 Animar gráficos</button>
+    <button class="btn btn-secundario" onclick="abrirModalUsuarios()">👥 Administrar Usuarios</button>
+    <button class="btn btn-dorado" onclick="activarEdicionDatos()" id="btnEditarDatos">✏️ Editar y guardar datos</button>
+    <button class="btn btn-secundario" onclick="exportarRespaldo()">⬇️ Copia de seguridad</button>
+    <button class="btn btn-secundario" onclick="document.getElementById('archivoRespaldo').click()">⬆️ Restaurar datos</button>
+    <input type="file" id="archivoRespaldo" accept="application/json,.json" style="display:none" onchange="importarRespaldo(event)">
+  </div>
+
+  <!-- CONTENEDOR -->
+  <div class="contenedor">
+
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="kpi"><div class="valor" data-contar="4.17">0.00</div><div class="etiqueta">Satisfacción global</div><div class="detalle">Escala 1–5 · Muy favorable</div></div>
+      <div class="kpi"><div class="valor" data-contar="82" data-sufijo="%">0%</div><div class="etiqueta">Dispuestos a fidelización</div><div class="detalle">82 % de los clientes</div></div>
+      <div class="kpi"><div class="valor" data-contar="88" data-sufijo="%">0%</div><div class="etiqueta">Recomendarían la marca</div><div class="detalle">88 % de los clientes</div></div>
+      <div class="kpi"><div class="valor" data-contar="3.20">0.00</div><div class="etiqueta">Marketing relacional</div><div class="detalle">Perspectiva del personal · Neutral</div></div>
+    </div>
+
+    <!-- SEC 1 -->
+    <div class="seccion abierta" id="sec1">
+      <div class="seccion-header" onclick="toggleSeccion('sec1')">
+        <h2><span class="icono">👨‍🍳</span> 1. Encuesta al Personal</h2>
+        <span class="flecha">▼</span>
+      </div>
+      <div class="seccion-body"><div class="seccion-inner">
+        <p><strong>Instrumento:</strong> Cuestionario semiestructurado (Likert de 5 puntos + preguntas abiertas).<br>
+        <strong>Aplicación:</strong> Gerente General (GG), Maestro Repostero (MR) y Despachadora (D).</p>
+
+        <h3 style="color:var(--rosa);margin:18px 0 8px;">1.1 Resultados Likert por dimensión</h3>
+        <table>
+          <thead><tr><th>Dimensión</th><th class="centro">GG</th><th class="centro">MR</th><th class="centro">D</th><th class="centro">Promedio</th><th>Interpretación</th></tr></thead>
+          <tbody>
+            <tr><td>II. Necesidades y preferencias de clientes</td><td class="centro">4.2</td><td class="centro">3.8</td><td class="centro">4.0</td><td class="centro negrita">4.00</td><td><span class="badge badge-favorable">Favorable</span></td></tr>
+            <tr><td>III. Elementos del marketing relacional</td><td class="centro">3.4</td><td class="centro">3.2</td><td class="centro">3.0</td><td class="centro negrita">3.20</td><td><span class="badge badge-neutral">Neutral</span></td></tr>
+            <tr><td>IV. Fidelización y posicionamiento</td><td class="centro">3.6</td><td class="centro">3.4</td><td class="centro">3.2</td><td class="centro negrita">3.40</td><td><span class="badge badge-neutral">Neutral</span></td></tr>
+            <tr><td class="negrita">Promedio general</td><td class="centro">3.73</td><td class="centro">3.47</td><td class="centro">3.40</td><td class="centro negrita" style="color:var(--rosa);">3.53</td><td><span class="badge badge-favorable">Favorable (bajo)</span></td></tr>
+          </tbody>
+        </table>
+
+        <div class="barra-grupo">
+          <div class="barra-item"><div class="barra-label"><span>Necesidades y preferencias</span><span>4.00 / 5</span></div><div class="barra-fondo"><div class="barra-relleno verde" data-ancho="80%"></div></div></div>
+          <div class="barra-item"><div class="barra-label"><span>Marketing relacional</span><span>3.20 / 5</span></div><div class="barra-fondo"><div class="barra-relleno amarilla" data-ancho="64%"></div></div></div>
+          <div class="barra-item"><div class="barra-label"><span>Fidelización y posicionamiento</span><span>3.40 / 5</span></div><div class="barra-fondo"><div class="barra-relleno amarilla" data-ancho="68%"></div></div></div>
+        </div>
+
+        <h3 style="color:var(--rosa);margin:18px 0 8px;">1.2 Preguntas abiertas (categorizadas)</h3>
+        <table>
+          <thead><tr><th>Categoría</th><th class="centro">Frecuencia</th><th>Síntesis</th></tr></thead>
+          <tbody>
+            <tr><td>Atributos diferenciadores</td><td class="centro">3/3</td><td>Sabor artesanal, recetas caseras, trato familiar</td></tr>
+            <tr><td>Quejas frecuentes</td><td class="centro">2/3</td><td>Tiempo de espera en horas pico; poca variedad sin azúcar</td></tr>
+            <tr><td>Acciones prioritarias</td><td class="centro">3/3</td><td>Programa de fidelización formal; mayor presencia en redes</td></tr>
+            <tr><td>Comunicación con clientes</td><td class="centro">3/3</td><td>Informal (boca a boca, WhatsApp personal)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="interpretacion">
+          <strong>💡 Interpretación:</strong> El personal domina el conocimiento del cliente (4.00), pero reconoce debilidades en la gestión relacional (3.20) y un posicionamiento no consolidado (3.40). La relación con el cliente es informal y no sistematizada, lo que justifica la propuesta de estrategias de marketing relacional.
+        </div>
+      </div></div>
+    </div>
+
+    <!-- SEC 2 -->
+    <div class="seccion abierta salto" id="sec2">
+      <div class="seccion-header" onclick="toggleSeccion('sec2')">
+        <h2><span class="icono">🧑‍🤝‍🧑</span> 2. Encuesta a Clientes</h2>
+        <span class="flecha">▼</span>
+      </div>
+      <div class="seccion-body"><div class="seccion-inner">
+        <p><strong>Muestra:</strong> 40 clientes frecuentes (≥ 1 compra/semana o clientes desde el inicio), encuestados en horario de atención.</p>
+
+        <h3 style="color:var(--rosa);margin:18px 0 8px;">2.1 Datos generales</h3>
+        <table>
+          <thead><tr><th>Variable</th><th>Distribución</th></tr></thead>
+          <tbody>
+            <tr><td>Edad</td><td>18–25: 20 % · 26–40: 45 % · 41–55: 25 % · &gt;55: 10 %</td></tr>
+            <tr><td>Sexo</td><td>Femenino 62 % · Masculino 38 %</td></tr>
+            <tr><td>Frecuencia de compra</td><td>≥2/semana: 35 % · 1/semana: 45 % · Quincenal: 20 %</td></tr>
+            <tr><td>Antigüedad como cliente</td><td>&gt;2 años: 40 % · 1–2 años: 35 % · &lt;1 año: 25 %</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="color:var(--rosa);margin:18px 0 8px;">2.2 Preferencias de consumo</h3>
+        <table>
+          <thead><tr><th>Producto</th><th class="centro">%</th></tr></thead>
+          <tbody>
+            <tr><td>Tortas y ponqués</td><td class="centro">38 %</td></tr>
+            <tr><td>Postres individuales</td><td class="centro">27 %</td></tr>
+            <tr><td>Panadería dulce</td><td class="centro">20 %</td></tr>
+            <tr><td>Otros (galletas, brownies)</td><td class="centro">15 %</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="color:var(--rosa);margin:18px 0 8px;">2.3 Canales de compra (dicotómicas)</h3>
+        <table>
+          <thead><tr><th>Canal</th><th class="centro">% Sí</th><th>Evaluación</th></tr></thead>
+          <tbody>
+            <tr><td>Compra presencial</td><td class="centro">95 %</td><td><span class="badge badge-consolidada">Consolidada</span></td></tr>
+            <tr><td>WhatsApp / teléfono</td><td class="centro">60 %</td><td><span class="badge badge-moderada">Moderada</span></td></tr>
+            <tr><td>Redes sociales</td><td class="centro">35 %</td><td><span class="badge badge-debil">Débil</span></td></tr>
+            <tr><td>Delivery</td><td class="centro">25 %</td><td><span class="badge badge-debil">Débil</span></td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="color:var(--rosa);margin:18px 0 8px;">2.4 Percepción de la atención (Likert 5 puntos)</h3>
+        <table>
+          <thead><tr><th>Ítem</th><th class="centro">Promedio</th></tr></thead>
+          <tbody>
+            <tr><td>Amabilidad del personal</td><td class="centro">4.5</td></tr>
+            <tr><td>Trato personalizado</td><td class="centro">4.2</td></tr>
+            <tr><td>Rapidez del servicio</td><td class="centro">3.4</td></tr>
+            <tr><td>Limpieza del local</td><td class="centro">4.3</td></tr>
+            <tr><td>Presentación del producto</td><td class="centro">4.4</td></tr>
+            <tr><td>Resolución de problemas</td><td class="centro">3.6</td></tr>
+            <tr><td class="negrita">Promedio dimensión</td><td class="centro negrita" style="color:var(--rosa);">4.07</td></tr>
+          </tbody>
+        </table>
+
+        <div class="barra-grupo">
+          <div class="barra-item"><div class="barra-label"><span>Amabilidad</span><span>4.5 / 5</span></div><div class="barra-fondo"><div class="barra-relleno verde" data-ancho="90%"></div></div></div>
+          <div class="barra-item"><div class="barra-label"><span>Trato personalizado</span><span>4.2 / 5</span></div><div class="barra-fondo"><div class="barra-relleno verde" data-ancho="84%"></div></div></div>
+          <div class="barra-item"><div class="barra-label"><span>Rapidez del servicio</span><span>3.4 / 5</span></div><div class="barra-fondo"><div class="barra-relleno amarilla" data-ancho="68%"></div></div></div>
+          <div class="barra-item"><div class="barra-label"><span>Limpieza</span><span>4.3 / 5</span></div><div class="barra-fondo"><div class="barra-relleno verde" data-ancho="86%"></div></div></div>
+          <div class="barra-item"><div class="barra-label"><span>Presentación del producto</span><span>4.4 / 5</span></div><div class="barra-fondo"><div class="barra-relleno verde" data-ancho="88%"></div></div></div>
+          <div class="barra-item"><div class="barra-label"><span>Resolución de problemas</span><span>3.6 / 5</span></div><div class="barra-fondo"><div class="barra-relleno amarilla" data-ancho="72%"></div></div></div>
+        </div>
+
+        <h3 style="color:var(--rosa);margin:18px 0 8px;">2.5 Marketing relacional y fidelización</h3>
+        <table>
+          <thead><tr><th>Ítem</th><th>Tipo</th><th class="centro">Resultado</th><th>Evaluación</th></tr></thead>
+          <tbody>
+            <tr><td>Confianza y cercanía con la marca</td><td>Likert</td><td class="centro">4.1</td><td><span class="badge badge-favorable">Favorable</span></td></tr>
+            <tr><td>La atención supera expectativas</td><td>Likert</td><td class="centro">3.7</td><td><span class="badge badge-favorable">Favorable</span></td></tr>
+            <tr><td>Recomendaría Barjotsweet</td><td>Sí/No</td><td class="centro">88 %</td><td><span class="badge badge-consolidada">Consolidada</span></td></tr>
+            <tr><td>Participaría en programa de fidelización</td><td>Sí/No</td><td class="centro">82 %</td><td><span class="badge badge-consolidada">Consolidada</span></td></tr>
+            <tr><td>Recibe comunicación/promociones</td><td>Sí/No</td><td class="centro">30 %</td><td><span class="badge badge-debil">Débil</span></td></tr>
+            <tr><td>Conoce redes sociales de la marca</td><td>Sí/No</td><td class="centro">40 %</td><td><span class="badge badge-moderada">Moderada</span></td></tr>
+            <tr><td class="negrita">Promedio Likert dimensión</td><td></td><td class="centro negrita" style="color:var(--rosa);">3.90</td><td><span class="badge badge-favorable">Favorable</span></td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="color:var(--rosa);margin:18px 0 8px;">2.6 Satisfacción global (escala 1–5)</h3>
+        <table>
+          <thead><tr><th>Puntaje</th><th class="centro">% clientes</th></tr></thead>
+          <tbody>
+            <tr><td>5 – Muy satisfecho</td><td class="centro">42 %</td></tr>
+            <tr><td>4 – Satisfecho</td><td class="centro">38 %</td></tr>
+            <tr><td>3 – Neutral</td><td class="centro">15 %</td></tr>
+            <tr><td>2 – Insatisfecho</td><td class="centro">5 %</td></tr>
+            <tr><td>1 – Muy insatisfecho</td><td class="centro">0 %</td></tr>
+            <tr><td class="negrita">Promedio</td><td class="centro negrita" style="color:var(--verde);">4.17 (Muy favorable)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="color:var(--rosa);margin:18px 0 8px;">2.7 Sugerencias (abiertas – categorizadas)</h3>
+        <table>
+          <thead><tr><th>Categoría</th><th class="centro">Menciones</th></tr></thead>
+          <tbody>
+            <tr><td>Mayor variedad (sin azúcar/saludable)</td><td class="centro">14</td></tr>
+            <tr><td>Promociones y descuentos</td><td class="centro">11</td></tr>
+            <tr><td>Mejorar tiempo de espera</td><td class="centro">9</td></tr>
+            <tr><td>Mayor presencia en redes sociales</td><td class="centro">7</td></tr>
+            <tr><td>Ampliar horarios / delivery</td><td class="centro">5</td></tr>
+          </tbody>
+        </table>
+
+        <div class="interpretacion">
+          <strong>💡 Interpretación:</strong> Los clientes valoran el trato humano y la calidad (4.07–4.17), fortaleza central de la marca. Las brechas son: comunicación débil (30 % recibe promociones; 40 % conoce redes), rapidez del servicio (3.4) y ausencia de programa de fidelización pese a la alta disposición (82 %). Satisfacción global muy favorable (4.17): posicionamiento afectivo sólido pero no aprovechado estratégicamente.
+        </div>
+      </div></div>
+    </div>
+
+    <!-- SEC 3 -->
+    <div class="seccion abierta salto" id="sec3">
+      <div class="seccion-header" onclick="toggleSeccion('sec3')">
+        <h2><span class="icono">🔍</span> 3. Instrumentos Complementarios</h2>
+        <span class="flecha">▼</span>
+      </div>
+      <div class="seccion-body"><div class="seccion-inner">
+        <h3 style="color:var(--rosa);margin-bottom:8px;">3.1 Guía de observación (promedios 1–5)</h3>
+        <table>
+          <thead><tr><th>Categoría</th><th class="centro">Promedio</th><th>Observación</th></tr></thead>
+          <tbody>
+            <tr><td>Atención al cliente</td><td class="centro">4.0</td><td>Saludo cordial; demoras en horas pico</td></tr>
+            <tr><td>Presentación del producto</td><td class="centro">4.5</td><td>Empaque cuidado, buena exhibición</td></tr>
+            <tr><td>Infraestructura y entorno</td><td class="centro">3.8</td><td>Limpieza adecuada; espacio reducido</td></tr>
+            <tr><td>Comunicación visual</td><td class="centro">2.8</td><td>Poca señalización y material promocional</td></tr>
+            <tr><td class="negrita">Promedio</td><td class="centro negrita" style="color:var(--rosa);">3.78</td><td>Favorable (bajo)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="color:var(--rosa);margin:18px 0 8px;">3.2 Grupo focal (5 clientes)</h3>
+        <ul style="margin-left:20px;">
+          <li><strong>Recuerdo de marca:</strong> asociada a "tortas caseras" y "trato familiar"; baja mención espontánea fuera del círculo de clientes.</li>
+          <li><strong>Atributos diferenciadores:</strong> sabor artesanal, atención personalizada, confianza.</li>
+          <li><strong>Expectativas de fidelidad:</strong> descuentos por acumulación, promociones de cumpleaños, comunicación por WhatsApp.</li>
+        </ul>
+      </div></div>
+    </div>
+
+    <!-- SEC 4 -->
+    <div class="seccion abierta" id="sec4">
+      <div class="seccion-header" onclick="toggleSeccion('sec4')">
+        <h2><span class="icono">🔺</span> 4. Triangulación de Fuentes</h2>
+        <span class="flecha">▼</span>
+      </div>
+      <div class="seccion-body"><div class="seccion-inner">
+        <table>
+          <thead><tr><th>Hallazgo</th><th class="centro">Personal</th><th class="centro">Clientes</th><th class="centro">Observación</th><th class="centro">Coincidencia</th></tr></thead>
+          <tbody>
+            <tr><td>Trato humano es fortaleza</td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="badge badge-alto">Alta</span></td></tr>
+            <tr><td>Comunicación con el cliente débil</td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="badge badge-alto">Alta</span></td></tr>
+            <tr><td>Sin programa de fidelización formal</td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="dash">—</span></td><td class="centro"><span class="badge badge-alto">Alta</span></td></tr>
+            <tr><td>Tiempo de espera crítico</td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="badge badge-alto">Alta</span></td></tr>
+            <tr><td>Posicionamiento afectivo desaprovechado</td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="check">✔</span></td><td class="centro"><span class="badge badge-alto">Alta</span></td></tr>
+          </tbody>
+        </table>
+        <div class="interpretacion">
+          <strong>💡 Interpretación:</strong> La coincidencia entre las tres fuentes fortalece la credibilidad y consistencia de los hallazgos (criterio de triangulación, Capítulo III).
+        </div>
+      </div></div>
+    </div>
+
+    <!-- SEC 5 -->
+    <div class="seccion abierta" id="sec5">
+      <div class="seccion-header" onclick="toggleSeccion('sec5')">
+        <h2><span class="icono">📝</span> 5. Síntesis Interpretativa General</h2>
+        <span class="flecha">▼</span>
+      </div>
+      <div class="seccion-body"><div class="seccion-inner">
+        <div class="conclusion">
+          <ol>
+            <li><strong>Fortalezas:</strong> calidad artesanal del producto, amabilidad y trato personalizado, confianza percibida, satisfacción global 4.17 y disposición a la fidelización 82 %.</li>
+            <li><strong>Debilidades:</strong> comunicación informal y no sistematizada, ausencia de programa de fidelización, baja presencia en redes, tiempos de espera, comunicación visual limitada (2.8).</li>
+            <li><strong>Oportunidad estratégica:</strong> el vínculo afectivo ya existe; el marketing relacional debe formalizarlo (programa de fidelidad, CRM básico por WhatsApp, promociones por frecuencia, mejora de redes y señalización).</li>
+            <li><strong>Conclusión diagnóstica:</strong> Barjotsweet posee un posicionamiento afectivo favorable pero no consolidado estratégicamente; las estrategias propuestas responden directamente a las brechas identificadas y trianguladas.</li>
+          </ol>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- SEC 6 -->
+    <div class="seccion abierta" id="sec6">
+      <div class="seccion-header" onclick="toggleSeccion('sec6')">
+        <h2><span class="icono">📏</span> 6. Criterios de Evaluación Aplicados</h2>
+        <span class="flecha">▼</span>
+      </div>
+      <div class="seccion-body"><div class="seccion-inner">
+        <table>
+          <thead><tr><th>Escala / Criterio</th><th>Rangos e interpretación</th></tr></thead>
+          <tbody>
+            <tr><td>Likert (5 puntos)</td><td>1.00–1.80 muy desfavorable · 1.81–2.60 desfavorable · 2.61–3.40 neutral · 3.41–4.20 favorable · 4.21–5.00 muy favorable</td></tr>
+            <tr><td>Satisfacción (1–5)</td><td>Muy insatisfecho → Muy satisfecho (mismos rangos)</td></tr>
+            <tr><td>Calidad percibida (1–5)</td><td>Muy mala → Excelente (mismos rangos)</td></tr>
+            <tr><td>Dicotómicas (Sí/No)</td><td>≥ 70 % consolidada · 40–69 % moderada · &lt; 40 % débil</td></tr>
+            <tr><td>Preguntas abiertas</td><td>Categorización temática por afinidad y frecuencia</td></tr>
+            <tr><td>Confiabilidad</td><td>Alfa de Cronbach ≥ 0.70 (prueba piloto)</td></tr>
+            <tr><td>Validez</td><td>Juicio de expertos + triangulación de fuentes</td></tr>
+          </tbody>
+        </table>
+      </div></div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    Sistema Digital de Encuestas · Repostería Barjotsweet · Capítulo III — Marco Metodológico<br>
+    Blanca Mendoza · V-26.187.660 · Barquisimeto, abril 2025
+  </footer>
+
+</div>
+
+<!-- ================= MODAL USUARIOS ================= -->
+<div class="modal-overlay" id="modalUsuarios">
+  <div class="modal" style="max-width:760px;">
+    <button class="cerrar" onclick="cerrarModalUsuarios()">✕</button>
+    <h3>👥 Administración de Usuarios</h3>
+
+    <div id="avisoUsuarios" class="aviso"></div>
+
+    <div style="overflow-x:auto;">
+      <table style="margin-top:6px;">
+        <thead><tr><th>Usuario</th><th>Nombre</th><th class="centro">Rol</th><th class="centro">Creado</th><th class="centro">Acciones</th></tr></thead>
+        <tbody id="tablaUsuarios"></tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:20px;padding:14px;border-radius:12px;background:#fff8ef;color:var(--marron);font-size:.9rem;line-height:1.5;">
+      <strong>Gestión de cuentas en la nube</strong><br>
+      Las cuentas se crean desde «Crear una cuenta nueva» en el acceso. Por seguridad, los nuevos registros reciben el rol <strong>Usuario</strong>. La asignación de Administrador o Editor se realiza desde el panel seguro de Supabase; nunca desde el navegador.
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL PROGRESO PDF ================= -->
+<div class="pdf-overlay" id="pdfOverlay">
+  <div class="pdf-panel">
+    <h3>📄 Generando Documento PDF</h3>
+    <p class="pdf-sub">Encuestas y Resultados — Repostería Barjotsweet</p>
+
+    <div class="pdf-barra-wrap">
+      <div class="pdf-barra" id="pdfBarra"></div>
+    </div>
+    <div class="pdf-porcentaje" id="pdfPorcentaje">0 %</div>
+
+    <ul class="pdf-pasos" id="pdfPasos">
+      <li data-paso="0"><span class="estado">1</span> Verificando sesión y permisos</li>
+      <li data-paso="1"><span class="estado">2</span> Expandiendo todas las secciones</li>
+      <li data-paso="2"><span class="estado">3</span> Renderizando gráficos y tablas</li>
+      <li data-paso="3"><span class="estado">4</span> Preparando estructura del documento</li>
+      <li data-paso="4"><span class="estado">5</span> Abriendo diálogo de impresión</li>
+      <li data-paso="5"><span class="estado">6</span> Confirmar "Guardar como PDF" en el navegador</li>
+    </ul>
+
+    <button class="btn btn-primario btn-descarga-final" id="btnDescargaFinal" onclick="finalizarDescargaPDF()">
+      ✅ Listo — Abrir diálogo de impresión
+    </button>
+  </div>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.81.1/dist/umd/supabase.min.js"></script>
+<script>
+/* =========================================================
+   CONEXIÓN SUPABASE — BARJOTSWEET (GitHub Pages)
+   La clave publishable es pública por diseño; RLS protege los datos.
+   Nunca colocar service_role / secret keys en este archivo.
+   ========================================================= */
+const SUPABASE_URL = 'https://soljzsxndbstdfyxmipn.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_oWoTFblo0jvH3jCW_21hvA_6NMF4xvw';
+const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+});
+let usuarioSesion = null;
+let perfilSesion = null;
+let rolesSesion = 'usuario';
+let datosNubeDisponibles = false;
+
+/* =========================================================
+   AUTENTICACIÓN Y PERFILES EN SUPABASE
+   ========================================================= */
+const CLAVE_SESION = 'barjotsweet_sesion';
+let indiceEdicion = -1;
+
+function sesionActual() {
+  if (!usuarioSesion) return null;
+  return {
+    id: usuarioSesion.id,
+    usuario: perfilSesion?.username || usuarioSesion.email || '',
+    email: usuarioSesion.email || '',
+    nombre: perfilSesion?.full_name || usuarioSesion.user_metadata?.full_name || usuarioSesion.email || 'Usuario',
+    rol: rolesSesion
+  };
+}
+
+async function hidratarSesion(user) {
+  if (!user) return;
+  const [{ data: perfil }, { data: rol }] = await Promise.all([
+    sbClient.from('profiles').select('id,email,username,full_name,created_at').eq('id', user.id).maybeSingle(),
+    sbClient.from('user_roles').select('role').eq('user_id', user.id).maybeSingle()
+  ]);
+  usuarioSesion = user;
+  perfilSesion = perfil || {
+    id: user.id,
+    email: user.email,
+    username: user.email?.split('@')[0] || 'usuario',
+    full_name: user.user_metadata?.full_name || user.email || 'Usuario'
+  };
+  rolesSesion = rol?.role || 'usuario';
+  mostrarApp(sesionActual());
+  await cargarDatosSistema();
+}
+
+async function registrarCuenta() {
+  const email = document.getElementById('loginUsuario').value.trim().toLowerCase();
+  const password = document.getElementById('loginClave').value;
+  const aviso = document.getElementById('avisoLogin');
+  aviso.classList.remove('visible');
+  if (!email || !password) {
+    aviso.textContent = 'Ingrese correo y contraseña para crear la cuenta.';
+    aviso.classList.add('visible'); return;
+  }
+  if (password.length < 8) {
+    aviso.textContent = 'La contraseña debe tener al menos 8 caracteres.';
+    aviso.classList.add('visible'); return;
+  }
+  const nombre = prompt('Indique su nombre completo:');
+  if (!nombre || !nombre.trim()) return;
+  const { data, error } = await sbClient.auth.signUp({
+    email, password,
+    options: { emailRedirectTo: window.location.href.split('#')[0], data: { full_name: nombre.trim(), username: email.split('@')[0] } }
+  });
+  if (error) {
+    aviso.textContent = 'No se pudo crear la cuenta: ' + error.message;
+    aviso.classList.add('visible'); return;
+  }
+  if (data.session && data.user) {
+    await hidratarSesion(data.user);
+  } else {
+    aviso.textContent = 'Cuenta registrada. Revise su correo para confirmar la dirección y luego inicie sesión. El rol inicial es Usuario.';
+    aviso.classList.add('visible');
+  }
+}
+
+async function iniciarSesion() {
+  const email = document.getElementById('loginUsuario').value.trim().toLowerCase();
+  const password = document.getElementById('loginClave').value;
+  const aviso = document.getElementById('avisoLogin');
+  aviso.classList.remove('visible');
+  if (!email || !password) {
+    aviso.textContent = 'Debe completar el correo electrónico y la contraseña.';
+    aviso.classList.add('visible'); return;
+  }
+  const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
+  if (error) {
+    aviso.textContent = 'No fue posible iniciar sesión: ' + error.message;
+    aviso.classList.add('visible'); return;
+  }
+  await hidratarSesion(data.user);
+}
+
+async function cerrarSesion() {
+  await sbClient.auth.signOut();
+  usuarioSesion = null; perfilSesion = null; rolesSesion = 'usuario';
+  document.getElementById('app').classList.add('oculto');
+  document.getElementById('pantallaLogin').classList.remove('oculto');
+  document.getElementById('loginUsuario').value = '';
+  document.getElementById('loginClave').value = '';
+  document.getElementById('avisoLogin').classList.remove('visible');
+  document.getElementById('loginUsuario').focus();
+}
+
+function mostrarApp(u) {
+  if (!u) return;
+  document.getElementById('pantallaLogin').classList.add('oculto');
+  document.getElementById('app').classList.remove('oculto');
+  document.getElementById('nombreUsuario').textContent = u.nombre;
+  document.getElementById('avatarUsuario').textContent = (u.nombre || 'U').charAt(0).toUpperCase();
+  const rolEl = document.getElementById('rolUsuario');
+  rolEl.textContent = u.rol.toUpperCase();
+  rolEl.className = 'badge-rol' + (u.rol === 'admin' ? ' admin' : '');
+  animarContadores();
+  setTimeout(animarBarras, 400);
+}
+
+/* =========================================================
+   DIRECTORIO DE CUENTAS EN LA NUBE
+   ========================================================= */
+async function abrirModalUsuarios() {
+  const sesion = sesionActual();
+  if (!sesion || sesion.rol !== 'admin') {
+    alert('Solo los administradores pueden consultar el directorio de usuarios.');
+    return;
+  }
+  await renderTablaUsuarios();
+  document.getElementById('modalUsuarios').classList.add('activo');
+}
+
+function cerrarModalUsuarios() {
+  document.getElementById('modalUsuarios').classList.remove('activo');
+  document.getElementById('avisoUsuarios').classList.remove('visible');
+}
+
+async function renderTablaUsuarios() {
+  const tbody = document.getElementById('tablaUsuarios');
+  tbody.innerHTML = '<tr><td colspan="5" class="centro">Cargando cuentas…</td></tr>';
+  const [{ data: perfiles, error: errorPerfiles }, { data: roles, error: errorRoles }] = await Promise.all([
+    sbClient.from('profiles').select('id,email,username,full_name,created_at').order('created_at', { ascending: true }),
+    sbClient.from('user_roles').select('user_id,role')
+  ]);
+  if (errorPerfiles || errorRoles) {
+    tbody.innerHTML = '<tr><td colspan="5" class="centro">No se pudo consultar el directorio. Verifique el rol Administrador.</td></tr>';
+    return;
+  }
+  const mapaRoles = new Map((roles || []).map(r => [r.user_id, r.role]));
+  tbody.innerHTML = '';
+  (perfiles || []).forEach(p => {
+    const tr = document.createElement('tr');
+    const rol = mapaRoles.get(p.id) || 'usuario';
+    const fecha = p.created_at ? new Date(p.created_at).toLocaleDateString('es-VE') : '—';
+    tr.innerHTML = `<td><strong></strong><small style="display:block;color:#888"></small></td><td></td><td class="centro"><span class="badge"></span></td><td class="centro"></td><td class="centro">Gestionado por Auth</td>`;
+    tr.children[0].querySelector('strong').textContent = p.username || p.email || 'usuario';
+    tr.children[0].querySelector('small').textContent = p.email || '';
+    tr.children[1].textContent = p.full_name || '—';
+    tr.children[2].querySelector('span').textContent = rol.toUpperCase();
+    tr.children[2].querySelector('span').className = 'badge ' + (rol === 'admin' ? 'badge-neutral' : 'badge-favorable');
+    tr.children[3].textContent = fecha;
+    tbody.appendChild(tr);
+  });
+  if (!perfiles?.length) tbody.innerHTML = '<tr><td colspan="5" class="centro">No hay cuentas registradas todavía.</td></tr>';
+}
+
+/* =========================================================
+   PERSISTENCIA EN LA NUBE + RESPALDOS JSON
+   ========================================================= */
+const CLAVE_DATOS = 'barjotsweet_datos_v1';
+const VERSION_RESPALDO = 1;
+let modoEdicionDatos = false;
+let temporizadorGuardado = null;
+let cargaNubeEnCurso = false;
+
+function obtenerDatosSistema() {
+  return {
+    version: VERSION_RESPALDO,
+    sistema: 'Barjotsweet - Sistema Digital de Encuestas',
+    actualizado: new Date().toISOString(),
+    secciones: Array.from(document.querySelectorAll('#app .seccion')).map(sec => ({
+      id: sec.id,
+      html: sec.querySelector('.seccion-inner')?.innerHTML || ''
+    }))
+  };
+}
+
+async function guardarDatosSistema() {
+  const sesion = sesionActual();
+  if (!sesion || !['admin','editor'].includes(sesion.rol) || cargaNubeEnCurso) return false;
+  try {
+    const datos = obtenerDatosSistema();
+    const { error } = await sbClient.from('system_data').upsert({
+      id: 'principal', payload: datos, updated_by: sesion.id, updated_at: new Date().toISOString()
+    }, { onConflict: 'id' });
+    if (error) throw error;
+    localStorage.setItem(CLAVE_DATOS, JSON.stringify(datos));
+    mostrarEstadoPersistencia('Sincronizado con la nube');
+    return true;
+  } catch (error) {
+    mostrarEstadoPersistencia('Error de sincronización: ' + error.message, true);
+    console.error('Error guardando en Supabase:', error);
+    return false;
+  }
+}
+
+function programarGuardadoDatos() {
+  clearTimeout(temporizadorGuardado);
+  temporizadorGuardado = setTimeout(() => guardarDatosSistema(), 700);
+}
+
+function limpiarHTMLRespaldo(html) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(String(html), 'text/html');
+  doc.querySelectorAll('script,iframe,object,embed,form,link,meta,base').forEach(n => n.remove());
+  doc.body.querySelectorAll('*').forEach(el => {
+    Array.from(el.attributes).forEach(attr => {
+      const nombre = attr.name.toLowerCase();
+      const valor = attr.value.trim().toLowerCase();
+      if (nombre.startsWith('on') || ((nombre === 'href' || nombre === 'src') && valor.startsWith('javascript:'))) el.removeAttribute(attr.name);
+    });
+  });
+  return doc.body.innerHTML;
+}
+
+async function cargarDatosSistema() {
+  if (!sesionActual()) return;
+  cargaNubeEnCurso = true;
+  try {
+    const { data, error } = await sbClient.from('system_data').select('payload,updated_at').eq('id','principal').maybeSingle();
+    if (error) throw error;
+    const datos = data?.payload;
+    if (datos && datos.version === VERSION_RESPALDO && Array.isArray(datos.secciones) && datos.secciones.length) {
+      datos.secciones.forEach(item => {
+        if (!/^sec[1-6]$/.test(item.id) || typeof item.html !== 'string') return;
+        const destino = document.querySelector(`#${item.id} .seccion-inner`);
+        if (destino) destino.innerHTML = limpiarHTMLRespaldo(item.html);
+      });
+      localStorage.setItem(CLAVE_DATOS, JSON.stringify(datos));
+      datosNubeDisponibles = true;
+      mostrarEstadoPersistencia('Datos recuperados desde la nube');
+    } else if (['admin','editor'].includes(sesionActual()?.rol)) {
+      const local = localStorage.getItem(CLAVE_DATOS);
+      if (local) {
+        try {
+          const previo = JSON.parse(local);
+          if (previo.version === VERSION_RESPALDO && Array.isArray(previo.secciones)) {
+            previo.secciones.forEach(item => {
+              if (!/^sec[1-6]$/.test(item.id) || typeof item.html !== 'string') return;
+              const destino = document.querySelector(`#${item.id} .seccion-inner`);
+              if (destino) destino.innerHTML = limpiarHTMLRespaldo(item.html);
+            });
+          }
+        } catch (e) { console.warn('Respaldo local previo no válido; se usará el contenido base.', e); }
+      }
+      datosNubeDisponibles = true;
+      cargaNubeEnCurso = false;
+      await guardarDatosSistema();
+      cargaNubeEnCurso = true;
+    } else {
+      mostrarEstadoPersistencia('Aún no hay datos publicados', true);
+    }
+  } catch (error) {
+    mostrarEstadoPersistencia('No se pudo conectar con la nube: ' + error.message, true);
+    console.error('Error recuperando datos:', error);
+  } finally {
+    cargaNubeEnCurso = false;
+  }
+}
+
+function mostrarEstadoPersistencia(mensaje, error=false) {
+  let estado = document.getElementById('estadoPersistencia');
+  if (!estado) {
+    estado = document.createElement('span');
+    estado.id = 'estadoPersistencia';
+    estado.className = 'estado-persistencia';
+    document.querySelector('.toolbar')?.appendChild(estado);
+  }
+  estado.textContent = (error ? '⚠ ' : '✓ ') + mensaje;
+  estado.style.color = error ? 'var(--rojo)' : 'var(--verde)';
+}
+
+function activarEdicionDatos() {
+  const sesion = sesionActual();
+  if (!sesion || !['admin','editor'].includes(sesion.rol)) {
+    alert('Solo Administradores y Editores pueden modificar y guardar los datos.'); return;
+  }
+  modoEdicionDatos = !modoEdicionDatos;
+  document.body.classList.toggle('modo-edicion', modoEdicionDatos);
+  document.querySelectorAll('#app .seccion-inner').forEach(el => {
+    el.contentEditable = modoEdicionDatos ? 'true' : 'false';
+    el.spellcheck = modoEdicionDatos;
+  });
+  const boton = document.getElementById('btnEditarDatos');
+  boton.textContent = modoEdicionDatos ? '💾 Finalizar y sincronizar' : '✏️ Editar y guardar datos';
+  if (!modoEdicionDatos) {
+    guardarDatosSistema().then(ok => alert(ok ? 'Los cambios se sincronizaron con la nube.' : 'No se pudieron sincronizar los cambios. Revise su conexión y permisos.'));
+  } else alert('Modo edición activado. Los cambios se sincronizan automáticamente con Supabase.');
+}
+
+async function exportarRespaldo() {
+  const sesion = sesionActual();
+  if (!sesion || sesion.rol !== 'admin') { alert('Solo el administrador puede exportar una copia de seguridad.'); return; }
+  const datos = obtenerDatosSistema();
+  const blob = new Blob([JSON.stringify(datos, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url;
+  a.download = `respaldo-barjotsweet-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  const { error } = await sbClient.from('system_backups').insert({ payload: datos, note: 'Respaldo manual desde la aplicación', created_by: sesion.id });
+  mostrarEstadoPersistencia(error ? 'Archivo exportado; no se guardó copia en la nube' : 'Respaldo exportado y archivado en la nube', !!error);
+}
+
+function importarRespaldo(event) {
+  const sesion = sesionActual();
+  const archivo = event.target.files?.[0];
+  if (!sesion || sesion.rol !== 'admin' || !archivo) { event.target.value = ''; alert('Acción no autorizada o archivo no seleccionado.'); return; }
+  if (!confirm('La restauración reemplazará el contenido actual de las seis secciones y se sincronizará con la nube. ¿Desea continuar?')) { event.target.value = ''; return; }
+  const lector = new FileReader();
+  lector.onload = async () => {
+    try {
+      const datos = JSON.parse(lector.result);
+      if (datos.version !== VERSION_RESPALDO || datos.sistema !== 'Barjotsweet - Sistema Digital de Encuestas' || !Array.isArray(datos.secciones)) throw new Error('Formato de respaldo no válido.');
+      const ids = new Set(['sec1','sec2','sec3','sec4','sec5','sec6']);
+      datos.secciones.forEach(item => { if (!ids.has(item.id) || typeof item.html !== 'string' || item.html.length > 2000000) throw new Error('El respaldo contiene datos no válidos.'); });
+      datos.secciones.forEach(item => { const destino=document.querySelector(`#${item.id} .seccion-inner`); if(destino) destino.innerHTML=limpiarHTMLRespaldo(item.html); });
+      const ok = await guardarDatosSistema();
+      if (!ok) throw new Error('No fue posible guardar el respaldo en la nube.');
+      alert('Respaldo restaurado y sincronizado correctamente.');
+    } catch (error) { alert('No se pudo restaurar el respaldo: ' + error.message); }
+    finally { event.target.value = ''; }
+  };
+  lector.readAsText(archivo);
+}
+
+document.addEventListener('input', event => {
+  if (modoEdicionDatos && event.target.closest('.seccion-inner')) programarGuardadoDatos();
+});
+window.addEventListener('beforeunload', () => {
+  if (modoEdicionDatos) guardarDatosSistema();
+});
+
+/* =========================================================
+   SECCIONES / GRÁFICOS
+   ========================================================= */
+function toggleSeccion(id) {
+  document.getElementById(id).classList.toggle('abierta');
+}
+
+function expandirTodo(abrir) {
+  document.querySelectorAll('.seccion').forEach(sec => {
+    if (abrir) sec.classList.add('abierta');
+    else sec.classList.remove('abierta');
+  });
+}
+
+function animarBarras() {
+  document.querySelectorAll('.barra-relleno').forEach(barra => {
+    barra.style.width = '0';
+    setTimeout(() => { barra.style.width = barra.dataset.ancho; }, 100);
+  });
+}
+
+function animarContadores() {
+  document.querySelectorAll('.kpi .valor').forEach(el => {
+    const objetivo = parseFloat(el.dataset.contar);
+    const sufijo = el.dataset.sufijo || '';
+    const decimales = objetivo % 1 !== 0 ? 2 : 0;
+    let actual = 0;
+    const paso = objetivo / 60;
+    const intervalo = setInterval(() => {
+      actual += paso;
+      if (actual >= objetivo) { actual = objetivo; clearInterval(intervalo); }
+      el.textContent = actual.toFixed(decimales) + sufijo;
+    }, 20);
+  });
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.style.width = entry.target.dataset.ancho;
+  });
+}, { threshold: 0.3 });
+
+/* =========================================================
+   GENERACIÓN DE PDF CON PROGRESO VISIBLE
+   ========================================================= */
+const PASOS_PDF = [
+  { nombre: 'Verificando sesión y permisos', duracion: 600 },
+  { nombre: 'Expandiendo todas las secciones', duracion: 700 },
+  { nombre: 'Renderizando gráficos y tablas', duracion: 800 },
+  { nombre: 'Preparando estructura del documento', duracion: 700 },
+  { nombre: 'Abriendo diálogo de impresión', duracion: 600 },
+  { nombre: 'Confirmar "Guardar como PDF" en el navegador', duracion: 0 }
+];
+
+let pasoActual = 0;
+let intervaloProgreso = null;
+
+function abrirProgresoPDF() {
+  const sesion = sesionActual();
+  if (!sesion) {
+    alert('⛔ Debe iniciar sesión para generar el PDF.');
+    return;
+  }
+
+  pasoActual = 0;
+  document.getElementById('pdfBarra').style.width = '0%';
+  document.getElementById('pdfPorcentaje').textContent = '0 %';
+  document.getElementById('btnDescargaFinal').classList.remove('visible');
+
+  document.querySelectorAll('#pdfPasos li').forEach(li => {
+    li.classList.remove('activo', 'completado');
+    li.querySelector('.estado').textContent = parseInt(li.dataset.paso) + 1;
+  });
+
+  document.getElementById('pdfOverlay').classList.add('activo');
+  ejecutarPasoPDF();
+}
+
+function ejecutarPasoPDF() {
+  if (pasoActual >= PASOS_PDF.length) {
+    finalizarProgresoPDF();
+    return;
+  }
+
+  const li = document.querySelector(`#pdfPasos li[data-paso="${pasoActual}"]`);
+  const paso = PASOS_PDF[pasoActual];
+
+  // Marcar paso actual como activo
+  li.classList.add('activo');
+
+  // Calcular porcentaje objetivo al final del paso
+  const porcentajeObjetivo = Math.round(((pasoActual + 1) / PASOS_PDF.length) * 100);
+  const porcentajeInicio = Math.round((pasoActual / PASOS_PDF.length) * 100);
+
+  // Animar la barra y el contador durante la duración del paso
+  const duracion = paso.duracion || 400;
+  const inicio = Date.now();
+
+  if (intervaloProgreso) clearInterval(intervaloProgreso);
+  intervaloProgreso = setInterval(() => {
+    const transcurrido = Date.now() - inicio;
+    const progreso = Math.min(transcurrido / duracion, 1);
+    const pct = porcentajeInicio + (porcentajeObjetivo - porcentajeInicio) * progreso;
+    document.getElementById('pdfBarra').style.width = pct + '%';
+    document.getElementById('pdfPorcentaje').textContent = Math.round(pct) + ' %';
+
+    if (progreso >= 1) {
+      clearInterval(intervaloProgreso);
+      intervaloProgreso = null;
+
+      // Marcar como completado
+      li.classList.remove('activo');
+      li.classList.add('completado');
+      li.querySelector('.estado').textContent = '✓';
+
+      // Ejecutar acción del paso (si aplica)
+      ejecutarAccionPaso(pasoActual);
+
+      // Siguiente paso
+      pasoActual++;
+      if (pasoActual < PASOS_PDF.length) {
+        setTimeout(ejecutarPasoPDF, 200);
+      } else {
+        finalizarProgresoPDF();
+      }
+    }
+  }, 30);
+}
+
+function ejecutarAccionPaso(indice) {
+  switch (indice) {
+    case 0:
+      // Verificar sesión (ya verificado al abrir)
+      break;
+    case 1:
+      // Expandir todas las secciones
+      expandirTodo(true);
+      break;
+    case 2:
+      // Animar barras y contadores para que se rendericen
+      animarBarras();
+      animarContadores();
+      break;
+    case 3:
+      // Preparar estructura (nada especial, pero podríamos dar un respiro)
+      break;
+    case 4:
+      // Abrir diálogo de impresión se hará al finalizar
+      break;
+  }
+}
+
+function finalizarProgresoPDF() {
+  document.getElementById('pdfBarra').style.width = '100%';
+  document.getElementById('pdfPorcentaje').textContent = '100 %';
+
+  // Mostrar botón final
+  document.getElementById('btnDescargaFinal').classList.add('visible');
+
+  // Mensaje en el último paso
+  const ultimoLi = document.querySelector('#pdfPasos li[data-paso="5"]');
+  if (ultimoLi) {
+    ultimoLi.classList.add('activo');
+    ultimoLi.querySelector('.estado').textContent = '⏳';
+  }
+}
+
+function finalizarDescargaPDF() {
+  document.getElementById('pdfOverlay').classList.remove('activo');
+
+  // Pequeña espera para que se cierre el modal antes de abrir la impresión
+  setTimeout(() => {
+    window.print();
+  }, 300);
+}
+
+// Restauración de sesión y datos desde Supabase Auth + Database.
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!window.supabase?.createClient) {
+    const aviso = document.getElementById('avisoLogin');
+    aviso.textContent = 'No se pudo cargar el cliente de Supabase. Compruebe su conexión.';
+    aviso.classList.add('visible'); return;
+  }
+  const { data: { session }, error } = await sbClient.auth.getSession();
+  if (error) console.error('Error leyendo sesión:', error);
+  if (session?.user) await hidratarSesion(session.user);
+  else {
+    document.getElementById('pantallaLogin').classList.remove('oculto');
+    document.getElementById('app').classList.add('oculto');
+  }
+  sbClient.auth.onAuthStateChange((event, sessionActual) => {
+    if (event === 'SIGNED_OUT' || !sessionActual) {
+      usuarioSesion = null; perfilSesion = null; rolesSesion = 'usuario';
+      document.getElementById('app').classList.add('oculto');
+      document.getElementById('pantallaLogin').classList.remove('oculto');
+    }
+  });
+});
+</script>
+
+</body>
+</html>
